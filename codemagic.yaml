@@ -1,0 +1,27 @@
+workflows:
+  flutter-app:
+    name: Build Flutter App (Android & iOS)
+    instance_type: mac_mini
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      vars:
+        PACKAGE_NAME: "com.yourcompany.app"
+        BUNDLE_ID: "com.yourcompany.app"
+    scripts:
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: Build Android APK
+        script: flutter build apk --release
+      - name: Build iOS
+        script: flutter build ios --release --no-codesign
+      - name: Code signing for iOS
+        script: xcode-project build-ipa --workspace ios/Runner.xcworkspace --scheme Runner
+    artifacts:
+      - build/**/outputs/**/*.apk
+      - build/ios/ipa/*.ipa
+    publishing:
+      email:
+        recipients:
+          - "your.email@example.com"
